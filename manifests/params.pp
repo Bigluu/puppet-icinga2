@@ -18,14 +18,20 @@ class icinga2::params {
   ##################
   # Icinga 2 common package parameters
   case $::operatingsystem {
-    #CentOS systems:
-    'CentOS': {
+    #CentOS or RedHat systems:
+    'CentOS', 'RedHat': {
+     #Pick the right package provider:
+      $package_provider = 'yum'
+    }
+	
+	#RedHat systems:
+    'RedHat': {
       #Pick the right package provider:
       $package_provider = 'yum'
     }
 
-    #Ubuntu systems:
-    'Ubuntu': {
+   #Ubuntu systems:
+   'Ubuntu': {
       #Pick the right package provider:
       $package_provider = 'apt'
     }
@@ -70,7 +76,7 @@ class icinga2::params {
   #Pick the right package parameters based on the OS:
   case $::operatingsystem {
     #CentOS systems:
-    'CentOS': {
+    'CentOS', 'RedHat': {
       case $::operatingsystemmajrelease {
         '5': {
           #Icinga 2 server package
@@ -95,9 +101,9 @@ class icinga2::params {
       }
     }
 
-    #Ubuntu systems:
-    'Ubuntu': {
-      case $::operatingsystemrelease {
+   #Ubuntu systems:
+   'Ubuntu': {
+    case $::operatingsystemrelease {
         #Ubuntu 12.04 doesn't have nagios-plugins-common or nagios-plugins-contrib packages available...
         '12.04': {
           $icinga2_server_package = 'icinga2'
@@ -143,8 +149,8 @@ class icinga2::params {
   # Icinga 2 server config parameters
 
   case $::operatingsystem {
-    #CentOS systems:
-    'CentOS': {
+    #CentOS or RedHat systems:
+    'CentOS', 'RedHat': {
       #Settings for /etc/icinga2/:
       $etc_icinga2_owner = 'icinga'
       $etc_icinga2_group = 'icinga'
@@ -248,7 +254,7 @@ class icinga2::params {
 
   case $::operatingsystem {
     #Icinga 2 server daemon names for Red Had/CentOS systems:
-    'CentOS': {
+    'CentOS', 'RedHat': {
       case $::operatingsystemmajrelease {
         '5': {
           $icinga2_server_service_name = 'icinga2'
@@ -318,7 +324,7 @@ class icinga2::params {
 
   case $::operatingsystem {
     #File and template variable names for Red Had/CentOS systems:
-    'CentOS': {
+    'CentOS', 'RedHat': {
       $nrpe_config_basedir = '/etc/nagios'
       $nrpe_plugin_libdir  = '/usr/lib64/nagios/plugins'
       $checkplugin_libdir  = '/usr/lib64/nagios/plugins'
@@ -328,6 +334,7 @@ class icinga2::params {
       $nrpe_user           = 'nrpe'
       $nrpe_group          = 'nrpe'
     }
+
     #File and template variable names for Ubuntu systems:
     'Ubuntu': {
       $nrpe_config_basedir  = '/etc/nagios'
@@ -339,6 +346,7 @@ class icinga2::params {
       $nrpe_user            = 'nagios'
       $nrpe_group           = 'nagios'
     }
+
     #File and template variable names for Ubuntu systems:
     'Debian': {
       $nrpe_config_basedir  = '/etc/nagios'
@@ -350,15 +358,16 @@ class icinga2::params {
       $nrpe_user            = 'nagios'
       $nrpe_group           = 'nagios'
     }
-    #Fail if we're on any other OS:
+   
+   #Fail if we're on any other OS:
     default: { fail("${::operatingsystem} is not supported!") }
   }
 
   ##################
   # Icinga 2 client package parameters
   case $::operatingsystem {
-    #CentOS systems:
-    'CentOS': {
+    #CentOS or RedHat systems:
+    'CentOS', 'RedHat': {
       case $::operatingsystemmajrelease {
         '5': {
           #Pick the right list of client packages:
@@ -419,7 +428,7 @@ class icinga2::params {
   # Icinga 2 client service parameters
   case $::operatingsystem {
     #Daemon names for Red Had/CentOS systems:
-    'CentOS': {
+    'CentOS', 'RedHat': {
       $nrpe_daemon_name = 'nrpe'
     }
 
